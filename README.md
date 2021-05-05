@@ -1,18 +1,20 @@
 # igniter 🔥
 
-When you need to send a payment back to yourself using a 
-specific route on the Bitcoin ₿ lightning network, essentially
-doing a rebalance operation.
+When you need to do a circular rebalance by sending a payment 
+back to yourself using a specific route on the Bitcoin ₿ 
+lightning network.
 
 ## Prerequisites
 
 Those items are required before you attempt to use that script
 
 * A Bitcoin lightning network LND node
-* A need to send sats using a specific route
-* Enough liquidity in the said channel to cover the payment
-* Some modiications to the script to include a list of hops, an amount in
-satoshis as well as the initial channel's id.
+* A need to rebalance
+* Enough liquidity the original channel to cover the payment
+* Some modifications to the script
+  * A list of hops
+  * An amount in satoshis
+  * The initial channel's id
 
 ## What will happen
 
@@ -24,21 +26,19 @@ your node.
 ### Edit igniter.sh
 
 The script is currently pre-populated with a list of imaginary
-lightning network pub keys you'll have to replace. Aliases
-can be added as a comment next to each of them. They need to be
-replaced by an arbitrary number of pub keys related to nodes
-you're willing to route through.
+lightning network pub keys you'll have to replace. They must be
+replaced by the nodes you're looking forward to rebalance through.
+Aliases can be added as a comment next to each of them.
 
-Make sure that the last pub key is the one from your own node
-as this is where the funds will eventually land.
+Make sure that the last pub key is yours as this is where the 
+funds will eventually land.
 
 Next, update AMOUNT with the quantity of satoshis that will be
 routed.
 
 Finally, OUTGOING_CHAN_ID should contain the channel ID from
-where the payment will originate. This is one of the sender's
-node channels. In a `ring of fire`, it should be the channel
-you created. 
+where the payment will originate. In a `ring of fire`, it should
+be the channel you created yourself.
 
 For peeps having a hard time finding the channel id:
 
