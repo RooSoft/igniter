@@ -67,6 +67,7 @@ All that's left to do is to execute the script with this command
 ## What can be improved
 
 * We assume everything's going to be ok, must add some error handling
+* Maybe separate the script from the parameters in different files
 * lncli must be in the path
   * Umbrel users should avoid using ~umbrel/umbrel/bin/lncli as this will fail
     * As an workaround, alias `lncli='docker exec -it lnd lncli'`
