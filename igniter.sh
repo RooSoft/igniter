@@ -22,11 +22,21 @@ OUTGOING_CHAN_ID=749457911902765057  # initial channel to transmit from
 
 IFS=, eval 'HOPS="${pub_keys[*]}"'
 
-INVOICE=$(lncli addinvoice --amt=${AMOUNT} --memo="Rebalancing...")
+send () {
+  INVOICE=$($1 addinvoice --amt=${AMOUNT} --memo="Rebalancing...")
 
-PAYMENT_HASH=$(echo -n $INVOICE | jq -r .r_hash)
-PAYMENT_ADDRESS=$(echo -n $INVOICE | jq -r .payment_addr)
+  PAYMENT_HASH=$(echo -n $INVOICE | jq -r .r_hash)
+  PAYMENT_ADDRESS=$(echo -n $INVOICE | jq -r .payment_addr)
 
-lncli buildroute --amt ${AMOUNT} --hops ${HOPS} --outgoing_chan_id ${OUTGOING_CHAN_ID} \
-  | jq -c "(.route.hops[-1] | .mpp_record) |= {payment_addr:\"${PAYMENT_ADDRESS}\", total_amt_msat: \"${AMOUNT}000\"}" \
-  | lncli sendtoroute --payment_hash=${PAYMENT_HASH} -
+  $1 buildroute --amt ${AMOUNT} --hops ${HOPS} --outgoing_chan_id ${OUTGOING_CHAN_ID} \
+    | jq -c "(.route.hops[-1] | .mpp_record) |= {payment_addr:\"${PAYMENT_ADDRESS}\", total_amt_msat: \"${AMOUNT}000\"}" \
+    | $1 sendtoroute --payment_hash=${PAYMENT_HASH} -
+}
+
+## If an umbrel, use docker, else call lncli directly
+if uname -a | grep umbrel > /dev/null
+then
+    send "docker exec -i lnd lncli"
+else
+    send "lncli"
+fi
