@@ -29,10 +29,12 @@ if uname -a | grep umbrel > /dev/null; then
     LNCLI="docker exec -i lnd lncli"
 fi
 
+# Arg option: 'build'
 build () {
     $LNCLI buildroute --amt ${AMOUNT} --hops ${HOPS} --outgoing_chan_id ${OUTGOING_CHAN_ID}
 }
 
+# Arg option: 'send'
 send () {
   INVOICE=$($LNCLI addinvoice --amt=${AMOUNT} --memo="Rebalancing...")
 
@@ -44,4 +46,38 @@ send () {
     | $LNCLI sendtoroute --payment_hash=${PAYMENT_HASH} -
 }
 
-send
+# Arg option: '--help'
+help () {
+    cat << EOF
+usage: ./igniter.sh [--help] [build] [send]
+       <command> [<args>]
+
+Open the script and configure values first. Then run
+the script with one of the following flags:
+
+   build             Build the routes for the configured nodes
+   send              Build route and send payment along route
+
+EOF
+}
+
+
+# Run the script
+all_args=("$@")
+rest_args_array=("${all_args[@]:1}")
+rest_args="${rest_args_array[@]}"
+
+case $1 in
+    "build" )
+        build $rest_args
+        ;;
+    "send" )
+        send $rest_args
+        ;;
+    "--help" )
+        help
+        ;;
+    * )
+        help
+        ;;
+esac

@@ -56,12 +56,20 @@ Make sure the script is executable
 chmod +x igniter.sh
 ```
 
+## Test the route
+
+Test that all nodes are properly connected with this command
+
+```bash
+./igniter.sh build
+```
+
 ### Route the payment
 
 All that's left to do is to execute the script with this command
 
 ```bash
-./igniter.sh
+./igniter.sh send
 ```
 
 ## What can be improved
