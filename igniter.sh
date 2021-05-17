@@ -20,23 +20,28 @@ OUTGOING_CHAN_ID=749457911902765057  # initial channel to transmit from
 ####################################################
 ## the remaining of this script can remain untouched
 
+# Join pub keys into single string at $HOPS
 IFS=, eval 'HOPS="${pub_keys[*]}"'
 
+# If an umbrel, use docker, else call lncli directly
+LNCLI="lncli"
+if uname -a | grep umbrel > /dev/null; then
+    LNCLI="docker exec -i lnd lncli"
+fi
+
+build () {
+    $LNCLI buildroute --amt ${AMOUNT} --hops ${HOPS} --outgoing_chan_id ${OUTGOING_CHAN_ID}
+}
+
 send () {
-  INVOICE=$($1 addinvoice --amt=${AMOUNT} --memo="Rebalancing...")
+  INVOICE=$($LNCLI addinvoice --amt=${AMOUNT} --memo="Rebalancing...")
 
   PAYMENT_HASH=$(echo -n $INVOICE | jq -r .r_hash)
   PAYMENT_ADDRESS=$(echo -n $INVOICE | jq -r .payment_addr)
 
-  $1 buildroute --amt ${AMOUNT} --hops ${HOPS} --outgoing_chan_id ${OUTGOING_CHAN_ID} \
+  build \
     | jq -c "(.route.hops[-1] | .mpp_record) |= {payment_addr:\"${PAYMENT_ADDRESS}\", total_amt_msat: \"${AMOUNT}000\"}" \
-    | $1 sendtoroute --payment_hash=${PAYMENT_HASH} -
+    | $LNCLI sendtoroute --payment_hash=${PAYMENT_HASH} -
 }
 
-## If an umbrel, use docker, else call lncli directly
-if uname -a | grep umbrel > /dev/null
-then
-    send "docker exec -i lnd lncli"
-else
-    send "lncli"
-fi
+send
