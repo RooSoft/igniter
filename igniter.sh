@@ -16,6 +16,7 @@ declare pub_keys=(
 
 AMOUNT=10                            # value in satoshis to transmit
 OUTGOING_CHAN_ID=749457911902765057  # initial channel to transmit from
+MAX_FEE=100                          # Max fee, in sats that you're prepared to pay.
 
 ####################################################
 ## the remaining of this script can remain untouched
@@ -40,8 +41,19 @@ send () {
 
   PAYMENT_HASH=$(echo -n $INVOICE | jq -r .r_hash)
   PAYMENT_ADDRESS=$(echo -n $INVOICE | jq -r .payment_addr)
+  
+  ROUTE=$(build)
+  FEE=$(echo -n $ROUTE | jq .route.total_fees_msat)
+  FEE=${FEE:1:-4}
+  
+  echo "Route fee is $FEE sats."
 
-  build \
+  if (( FEE  > MAX_FEE )); then
+    echo "Error: $FEE exceeded max fee of $MAX_FEE"
+    exit 1
+  fi
+
+  echo $ROUTE \
     | jq -c "(.route.hops[-1] | .mpp_record) |= {payment_addr:\"${PAYMENT_ADDRESS}\", total_amt_msat: \"${AMOUNT}000\"}" \
     | $LNCLI sendtoroute --payment_hash=${PAYMENT_HASH} -
 }
