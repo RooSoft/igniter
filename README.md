@@ -11,6 +11,7 @@ Those items are required before you attempt to use that script
 * A Bitcoin lightning network LND node
 * A need to rebalance
 * Enough liquidity the original channel to cover the payment
+* [jq](https://stedolan.github.io/jq/) installed
 * Some modifications to the script
   * A list of hops
   * An amount in satoshis
