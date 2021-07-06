@@ -44,7 +44,8 @@ send () {
   
   ROUTE=$(build)
   FEE=$(echo -n $ROUTE | jq .route.total_fees_msat)
-  FEE=${FEE:1:-4}
+  # The fee is expressed as a quoted string in msat. A string length of less than 6 indicates a 0 sat fee.
+  FEE=$([ ${#FEE} -lt 6 ] && echo "0" || echo ${FEE:1:-4})
   
   echo "Route fee is $FEE sats."
 
