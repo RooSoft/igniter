@@ -15,11 +15,13 @@ declare pub_keys=(
 )
 
 AMOUNT=10                            # value in satoshis to transmit
-OUTGOING_CHAN_ID=749457911902765057  # initial channel to transmit from
 MAX_FEE=100                          # Max fee, in sats that you're prepared to pay.
 
 ####################################################
 ## the remaining of this script can remain untouched
+
+# Query lncli for the chan_id that relates to the first hop's pubkey
+OUTGOING_CHAN_ID=$(lncli listchannels | grep ${pub_keys[0]} -A 10 | grep chan_id | cut -d '"' -f4)
 
 # Join pub keys into single string at $HOPS
 IFS=, eval 'HOPS="${pub_keys[*]}"'
