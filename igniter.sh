@@ -1,22 +1,5 @@
 #!/bin/bash
 
-# test for availability of tools before use, don't rely on users
-# not used to cli dealing with errors down the line
-assert_tools () {
-        err=0
-        while test $# -gt 0; do
-                command -v "$1" >/dev/null 2>/dev/null || {
-                        >&2 printf "tool missing: $1\n"
-                        err=$(( $err + 1 ))
-                }
-                shift
-        done
-        test $err -eq 0 || exit $err
-}
-
-dependecies="cat jq lncli"
-assert_tools ${dependecies}
-
 # before running this script, the array below must be populated with
 # all nodes pub keys that will be part of the route
 
@@ -76,6 +59,20 @@ send () {
     | $LNCLI sendtoroute --payment_hash=${PAYMENT_HASH} -
 }
 
+# test for availability of tools before use, don't rely on users
+# not used to cli dealing with errors down the line
+assert_tools () {
+  err=0
+    while test $# -gt 0; do
+      command -v "$1" >/dev/null 2>/dev/null || {
+        >&2 printf "tool missing: $1\n"
+        err=$(( $err + 1 ))
+      }
+      shift
+    done
+    test $err -eq 0 || exit $err
+}
+
 # Arg option: '--help'
 help () {
     cat << EOF
@@ -93,6 +90,8 @@ EOF
 
 
 # Run the script
+dependecies="cat jq lncli"
+assert_tools ${dependecies}
 all_args=("$@")
 rest_args_array=("${all_args[@]:1}")
 rest_args="${rest_args_array[@]}"
