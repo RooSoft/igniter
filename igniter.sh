@@ -90,7 +90,7 @@ EOF
 
 
 # Run the script
-dependecies="cat jq lncli"
+dependecies="cat jq $LNCLI"
 assert_tools ${dependecies}
 all_args=("$@")
 rest_args_array=("${all_args[@]:1}")
