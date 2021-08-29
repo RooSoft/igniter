@@ -28,7 +28,7 @@ IFS=, eval 'HOPS="${pub_keys[*]}"'
 LNCLI="lncli"
 if uname -a | grep umbrel > /dev/null; then
     LNCLI="docker exec -i lnd lncli"
-		dependencies="cat jq"
+    dependencies="cat jq"
 else
     dependencies="cat jq lncli"
 fi
