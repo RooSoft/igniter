@@ -24,10 +24,13 @@ MAX_FEE=100                          # Max fee, in sats that you're prepared to 
 # Join pub keys into single string at $HOPS
 IFS=, eval 'HOPS="${pub_keys[*]}"'
 
-# If an umbrel, use docker, else call lncli directly
+# If an umbrel, use docker, else call lncli directly. Also setup dependencies accordingly.
 LNCLI="lncli"
 if uname -a | grep umbrel > /dev/null; then
     LNCLI="docker exec -i lnd lncli"
+		dependencies="cat jq"
+else
+    dependencies="cat jq lncli"
 fi
 
 # Arg option: 'build'
@@ -90,8 +93,7 @@ EOF
 
 
 # Run the script
-dependecies="cat jq lncli"
-assert_tools ${dependecies}
+assert_tools ${dependencies}
 all_args=("$@")
 rest_args_array=("${all_args[@]:1}")
 rest_args="${rest_args_array[@]}"
