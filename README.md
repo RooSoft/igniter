@@ -24,9 +24,9 @@ your node.
 
 ## How to use
 
-### Edit igniter.sh
+### Edit igniter.conf
 
-The script is currently pre-populated with a list of imaginary
+The sample config file is pre-populated with a list of imaginary
 lightning network pub keys you'll have to replace. They must be
 replaced by the nodes you're looking forward to rebalance through.
 Aliases can be added as a comment next to each of them.
@@ -76,7 +76,6 @@ All that's left to do is to execute the script with this command
 ## What can be improved
 
 * We assume everything's going to be ok, must add some error handling
-* Maybe separate the script from the parameters in different files
 * lncli must be in the path
   * Umbrel users should avoid using ~umbrel/umbrel/bin/lncli as this will fail
     * As an workaround, alias `lncli='docker exec -it lnd lncli'`
