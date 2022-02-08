@@ -1,21 +1,20 @@
 # igniter 🔥
 
-When you need to do a circular rebalance by sending a payment 
-back to yourself using a specific route on the Bitcoin ₿ 
+When you need to do a circular rebalance by sending a payment
+back to yourself using a specific route on the Bitcoin ₿
 lightning network.
 
-## Prerequisites
+Igniter is being distributed by
+[Lightning Shell](https://lightningshell.app)
+and can thus be installed from
+[Umbrel](https://getumbrel.com)'s app store.
 
-Those items are required before you attempt to use that script
+This document will explain how to use it directly from this repo.
+
+## Dependencies
 
 * A Bitcoin lightning network LND node
-* A need to rebalance
-* Enough liquidity the original channel to cover the payment
-* [jq](https://stedolan.github.io/jq/) installed
-* Some modifications to the script
-  * A list of hops
-  * An amount in satoshis
-  * The initial channel's id
+* [jq](https://stedolan.github.io/jq/)
 
 ## What will happen
 
@@ -27,11 +26,11 @@ your node.
 ### Edit igniter.conf
 
 The sample config file is pre-populated with a list of imaginary
-lightning network pub keys you'll have to replace. They must be
-replaced by the nodes you're looking forward to rebalance through.
-Aliases can be added as a comment next to each of them.
+lightning network pub keys. They must be replaced by the nodes
+you're looking forward to rebalance through. Aliases can be added
+as a comment next to each of them to make it more readable.
 
-Make sure that the last pub key is yours as this is where the 
+Make sure that the last pub key is yours as this is where the
 funds will eventually land.
 
 Next, update AMOUNT with the quantity of satoshis that will be
@@ -75,8 +74,6 @@ All that's left to do is to execute the script with this command
 
 ## What can be improved
 
-* We assume everything's going to be ok, must add some error handling
 * lncli must be in the path
   * Umbrel users should avoid using ~umbrel/umbrel/bin/lncli as this will fail
     * As an workaround, alias `lncli='docker exec -it lnd lncli'`
-    * Another way to use `igniter` on Umbrel is to simply install the [`lightning-shell`](http://github.com/ibz/lightning-shell) app from Umbrel's app store, which includes `igniter` already and just works!
