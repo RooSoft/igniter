@@ -79,3 +79,4 @@ All that's left to do is to execute the script with this command
 * lncli must be in the path
   * Umbrel users should avoid using ~umbrel/umbrel/bin/lncli as this will fail
     * As an workaround, alias `lncli='docker exec -it lnd lncli'`
+    * Another way to use `igniter` on Umbrel is to simply install the [`lightning-shell`](http://github.com/ibz/lightning-shell) app from Umbrel's app store, which includes `igniter` already and just works!
