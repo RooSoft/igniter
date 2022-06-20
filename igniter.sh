@@ -17,8 +17,14 @@ IFS=, eval 'HOPS="${pub_keys[*]}"'
 
 # If an umbrel, use docker, else call lncli directly. Also setup dependencies accordingly.
 LNCLI="lncli"
-if uname -a | grep umbrel > /dev/null; then
-    LNCLI="docker exec -i lnd lncli"
+if [ -d "$HOME/umbrel" ] ; then
+    # Umbrel < 0.5.x
+    if [ "docker ps -q  -f name=^lnd$" ] ; then
+      LNCLI="docker exec -i lnd lncli"
+    # Umbrel >= 0.5.x
+    else
+      LNCLI="$HOME/umbrel/scripts/app compose lightning exec lnd lncli"
+    fi
     dependencies="cat jq"
 else
     dependencies="cat jq lncli"
