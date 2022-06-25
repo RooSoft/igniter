@@ -19,7 +19,7 @@ IFS=, eval 'HOPS="${pub_keys[*]}"'
 LNCLI="lncli"
 if [ -d "$HOME/umbrel" ] ; then
     # Umbrel < 0.5.x
-    if [ "docker ps -q  -f name=^lnd$" ] ; then
+    if docker ps -q  -f name=^lnd$ | grep -q . ; then
       LNCLI="docker exec -i lnd lncli"
     # Umbrel >= 0.5.x
     else
