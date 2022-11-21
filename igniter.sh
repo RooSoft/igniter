@@ -48,7 +48,7 @@ connect () {
 	    if [ "$SELF" != "$KEY"  ] ; then
 	        ADDRESS=$($LNCLI getnodeinfo $KEY | grep \"addr\" |head -n 1| awk '{print $2}' |sed 's/"//g' )
 	        echo "Connecting to: $KEY@$ADDRESS"
-	        lncli connect $KEY@$ADDRESS
+	        $LNCLI connect $KEY@$ADDRESS
 	    fi
 	fi
     done
