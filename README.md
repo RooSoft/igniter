@@ -64,6 +64,14 @@ Test that all nodes are properly connected with this command
 ./igniter.sh build
 ```
 
+### Connect to all peers
+
+Test that all peers are up and your node can connect with this command
+
+```bash
+./igniter.sh connect
+```
+
 ### Route the payment
 
 All that's left to do is to execute the script with this command

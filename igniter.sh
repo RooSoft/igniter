@@ -35,6 +35,25 @@ build () {
     $LNCLI buildroute --amt ${AMOUNT} --hops ${HOPS} --outgoing_chan_id ${OUTGOING_CHAN_ID}
 }
 
+# Arg option: 'connect'
+connect () {
+    IFS=,
+    PEERS=$($LNCLI listpeers | grep pub_key  | tr '"' ' ' | awk '{print $3}')
+    SELF=$($LNCLI getinfo | grep pubkey | tr '"' ' ' | head -n 1 | awk '{print $3}')
+    for KEY in $HOPS
+    do
+	if [[ "$PEERS" =~ "$KEY" ]]; then
+		echo "Already connected to: $KEY "
+	else
+	    if [ "$SELF" != "$KEY"  ] ; then
+	        ADDRESS=$($LNCLI getnodeinfo $KEY | grep \"addr\" |head -n 1| awk '{print $2}' |sed 's/"//g' )
+	        echo "Connecting to: $KEY@$ADDRESS"
+	        $LNCLI connect $KEY@$ADDRESS
+	    fi
+	fi
+    done
+}
+
 # Arg option: 'send'
 send () {
   INVOICE=$($LNCLI addinvoice --amt=${AMOUNT} --memo="Rebalancing...")
@@ -76,13 +95,14 @@ assert_tools () {
 # Arg option: '--help'
 help () {
     cat << EOF
-usage: ./igniter.sh [--help] [build] [send]
+usage: ./igniter.sh [--help] [build] [connect] [send]
        <command> [<args>]
 
 Open the script and configure values first. Then run
 the script with one of the following flags:
 
-   build             Build the routes for the configured nodes
+   build             Build the routes for the configured node
+   connect           Connect to every peer with lncli
    send              Build route and send payment along route
 
 EOF
@@ -99,6 +119,9 @@ case $1 in
     "build" )
         build $rest_args
         ;;
+    "connect" )
+	connect $rest_args
+	;;
     "send" )
         send $rest_args
         ;;
