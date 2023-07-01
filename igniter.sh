@@ -17,17 +17,20 @@ IFS=, eval 'HOPS="${pub_keys[*]}"'
 
 # If an umbrel, use docker, else call lncli directly. Also setup dependencies accordingly.
 LNCLI="lncli"
-if [ -d "$HOME/umbrel" ] ; then
-    # Umbrel < 0.5.x
-    if docker ps -q  -f name=^lnd$ | grep -q . ; then
-      LNCLI="docker exec -i lnd lncli"
-    # Umbrel >= 0.5.x
-    else
-      LNCLI="$HOME/umbrel/scripts/app compose lightning exec lnd lncli"
+dependencies="cat jq lncli"
+
+# Check if docker is installed
+if command -v docker &> /dev/null; then
+    CONTAINERS=$(docker ps --format "{{.Names}}")
+
+    # Check if the container is running
+    if grep -qw "lightning_lnd_1" <<< "$CONTAINERS"; then
+        # Umbrel 
+        LNCLI="docker exec -i lightning_lnd_1 lncli"
+        dependencies="cat jq"
     fi
-    dependencies="cat jq"
 else
-    dependencies="cat jq lncli"
+    echo "Docker is not installed"
 fi
 
 # Arg option: 'build'
